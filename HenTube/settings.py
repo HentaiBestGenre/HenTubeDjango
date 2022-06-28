@@ -25,6 +25,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Videos.apps.VideosConfig',
+    'Profiles.apps.ProfilesConfig',
+    'Channel.apps.ChannelConfig'
 ]
 
 MIDDLEWARE = [
