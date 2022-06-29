@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Users.apps.UsersConfig',
     'Videos.apps.VideosConfig',
     'Profiles.apps.ProfilesConfig',
     'Channel.apps.ChannelConfig'
