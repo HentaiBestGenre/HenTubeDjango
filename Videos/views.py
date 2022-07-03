@@ -1,9 +1,9 @@
 from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Video
+from .models import Video, Like
 from .forms import UploadVideoForm
-from django.http import Http404
+from django.http import Http404, JsonResponse
 
 @login_required(login_url='Users:login')
 def index(request):
@@ -13,10 +13,39 @@ def index(request):
 def index2(request):
     return render(request, 'Videos/index2.html', {})
 
+@login_required(login_url='Users:login')
+def like(request):
+
+    value = True if request.POST['value'] == 'true' else False
+    try:
+        record = Like.objects.get(
+            video_id=request.POST['video_id'],
+            user_id=request.POST['user_id'],
+        )
+        if record.value is value:
+            record.delete()
+        else:
+            record.value = value
+            record.save()
+    except:
+        new_record = Like(
+            video_id=request.POST['video_id'],
+            user_id=request.POST['user_id'],
+            value=value
+        )
+        new_record.save()
+    likes = Like.objects.filter(video_id=request.POST['video_id'], value=True).count()
+    dislikes = Like.objects.filter(video_id=request.POST['video_id'], value=False).count()
+    return JsonResponse({'likes': likes, 'dislikes': dislikes}, status=200)
+
 def video(request, video_id):
     try:
         video = Video.objects.get(pk = video_id)
-        return render(request, 'Videos/video.html', {'video': video})
+        likes = Like.objects.filter(video_id = video_id, value=True).count()
+        dislikes = Like.objects.filter(video_id = video_id, value=False).count()
+        print(f'likes: {likes}')
+        print(f'dislikes: {dislikes}')
+        return render(request, 'Videos/video.html', {'video': video, 'likes': likes, 'dislikes': dislikes})
     except:
         raise Http404
 

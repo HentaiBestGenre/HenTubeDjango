@@ -8,7 +8,7 @@ class Video(models.Model):
     """ Table that contains videos data """
 
     title = models.CharField(max_length=32)
-    pub_data = models.DateTimeField("date published", default=timezone.now())
+    pub_data = models.DateTimeField("date published", default=timezone.now)
     path_name = models.FileField(upload_to='Videos/', validators=[
         FileExtensionValidator(allowed_extensions=['mp4'])
     ])
@@ -42,7 +42,7 @@ class Like(models.Model):
         on_delete=models.CASCADE,
     )
     value = models.BooleanField()
-    date = models.DateTimeField(default=timezone.now())
+    date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"""
@@ -62,7 +62,7 @@ class Comments(models.Model):
         on_delete=models.CASCADE,
     )
     value = models.TextField()
-    date = models.DateTimeField(default=timezone.now())
+    date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"""

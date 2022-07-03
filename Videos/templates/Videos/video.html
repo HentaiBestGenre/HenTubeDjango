@@ -1,7 +1,67 @@
 {% extends "base.html" %}
 {% load static %}
+{% block styles %}
+    <style>
+        video{
+            max-width: 60%;
+        }
+        .video-container{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .meta-video{
+            padding: 15px 0;
+            max-width: 60%;
+            display: flex;
+            margin: 0 auto;
+            justify-content: right;
+        }
+        .meta-video div,
+        .meta-video button{
+            padding: 0 15px;
+        }
+        .True{
+            background-color: green;
+        }
+        .False{
+            background-color: white;
+        }
+    </style>
+{% endblock %}
 {% block body %}
-    <video class="background-video" controls>
-        <source src="{% get_media_prefix  %}{{ video.path_name }}" type='video/mp4'>
-    </video>
+    <div class="content">
+        <div class="video-container">
+            <video class="background-video" controls>
+                <source src="{% get_media_prefix  %}{{ video.path_name }}" type='video/mp4'>
+            </video>
+        </div>
+        <div class="meta-video">
+            <button id="True" class="False" onclick="Like({{ video.id }}, {{ request.user.id }}, true)">Like</button>
+            <div class="likes">{{ likes }}</div>
+            <button id="False" class="False" onclick="Like({{ video.id }}, {{ request.user.id }}, false)">DisLike</button>
+            <div class="dislikes" onclick="">{{ dislikes }}</div>
+        </div>
+    </div>
 {% endblock body %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'js/jquery-3.6.0.min.js' %}" ></script>
+    <script type="text/javascript">
+        function Like(video_id, like_setter, value){
+            $.ajax({
+                url: "{% url 'Videos:like' %}",
+                data: {
+                    'video_id': video_id,
+                    'user_id': like_setter,
+                    'value': value,
+                    'csrfmiddlewaretoken': "{{ csrf_token }}"
+                },
+                type: 'POST',
+                success: function (response){
+                    $('.likes').text(response.likes)
+                    $('.dislikes').text(response.dislikes)
+                }
+            })
+        }
+    </script>
+{% endblock %}

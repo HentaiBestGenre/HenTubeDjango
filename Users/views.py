@@ -11,11 +11,11 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('Videos:index')
+            return redirect('main:mian_page')
         else:
             return render(request, 'Users/login_page.html', {})
     return render(request, 'Users/login_page.html', {})
 
 def logout_user(request):
     logout(request)
-    return redirect('Videos:index')
+    return redirect('main:mian_page')
