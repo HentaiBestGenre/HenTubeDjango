@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+    <video class="background-video" controls>
+        <source src="{% get_media_prefix  %}{{ video.path_name }}" type='video/mp4'>
+    </video>
+{% endblock body %}

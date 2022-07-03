@@ -6,16 +6,18 @@
         <title>HenTube</title>
         {% block styles %} {% endblock styles %}
         {% block meta %} {% endblock meta %}
-    </head>page
+    </head>
 
     <body>
         <header>
             <div>
                 {% if request.user.is_authenticated %}
                     <a href={% url 'Users:logout' %}>logout</a>
+                    <a href={% url 'Channels:channel' user_id=request.user.id %}>Profile</a><br>
                 {% else %}
                     <a href={% url 'Users:login' %}>login</a>
                 {% endif %}
+
             </div>
         </header>
         {% block body %} {% endblock body %}

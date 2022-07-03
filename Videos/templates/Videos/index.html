@@ -4,4 +4,21 @@
         "Videos" app<br>
         "index" page
     </div>
+    <div style="border: solid black; margin: 30px; display: flex; justify-content: center;">
+        <div style="width: 40%;">
+            <form method="post" enctype="multipart/form-data" action={% url 'Videos:post_video' %}>
+                {% csrf_token %}
+                <label>
+                    Video title
+                    <input type="text" maxlength="32" name="title" required>
+                </label>
+                <label>
+                    Video
+                    <input type="file" name="video" required autocomplete="off">
+                </label>
+
+                <button type="submit">submit</button>
+            </form>
+        </div>
+    </div>
 {% endblock body %}
