@@ -45,7 +45,11 @@ class Like(models.Model):
     date = models.DateTimeField(default=timezone.now())
 
     def __str__(self):
-        return f"User: {self.user.username},\nVideo: {self.video.title},\nvalue: {self.value}"
+        return f"""
+        User: {self.user.username},
+        Video: {self.video.title},
+        value: {self.value}
+        """
 
 
 class Comments(models.Model):
@@ -61,4 +65,8 @@ class Comments(models.Model):
     date = models.DateTimeField(default=timezone.now())
 
     def __str__(self):
-        return f"User: {self.user.username},\nVideo: {self.video.title},\ncreation date: {self.date}"
+        return f"""
+        User: {self.user.username},
+        Video: {self.video.title},
+        creation date: {self.date}
+        """
