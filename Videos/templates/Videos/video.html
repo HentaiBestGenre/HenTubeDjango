@@ -27,6 +27,11 @@
         .False{
             background-color: white;
         }
+        .comment-container{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
     </style>
 {% endblock %}
 {% block body %}
@@ -41,6 +46,28 @@
             <div class="likes">{{ likes }}</div>
             <button id="False" class="False" onclick="Like({{ video.id }}, {{ request.user.id }}, false)">DisLike</button>
             <div class="dislikes" onclick="">{{ dislikes }}</div>
+        </div>
+    </div>
+    <div class="comments">
+        <div class="create-comment">
+            <form class="add_comment">
+                {% csrf_token %}
+                <label>
+                    Value
+                    <input type="text" class="comment__value" name="value">
+                </label>
+                <input type="hidden" class="comment__value" name="user_id" value="{{ request.user.id  }}">
+                <input type="hidden" class="comment__value" name="video_id" value="{{ video.id }}">
+                <button type="button" id="add__comment" >Submit</button>
+            </form>
+        </div>
+        <div class="comments__container">
+            {% for i in comments %}
+                <div class="comment-container">
+                    <div class="commenter">{{ i.user.username }}</div>
+                    <div class="comment">{{ i.value }}</div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock body %}
@@ -63,5 +90,19 @@
                 }
             })
         }
+        $(document).ready(function(){
+            $('#add__comment').click(function () {
+                var data = $('.add_comment').serialize();
+                $.ajax({
+                    url: "{% url 'Videos:comment' %}",
+                    data: data,
+                    type: 'POST',
+                    success: function (response){
+                        var comment = "<div class=\"comment-container\"><div class=\"commenter\">" + response.username + "</div><div class=\"comment\">" + response.value + "</div></div>"
+                        $('.comments__container').prepend(comment)
+                    }
+                });
+            });
+        });
     </script>
 {% endblock %}

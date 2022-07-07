@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Video, Like
+from .models import Video, Like, Comments
 from .forms import UploadVideoForm
 from django.http import Http404, JsonResponse
 
@@ -13,9 +13,36 @@ def index(request):
 def index2(request):
     return render(request, 'Videos/index2.html', {})
 
+def video(request, video_id):
+    try:
+        video = Video.objects.get(pk = video_id)
+        likes = Like.objects.filter(video_id = video_id, value=True).count()
+        dislikes = Like.objects.filter(video_id = video_id, value=False).count()
+        comments = Comments.objects.filter(video_id = video_id)
+        return render(request, 'Videos/video.html', {'video': video, 'likes': likes, 'dislikes': dislikes, 'comments': comments})
+    except:
+        raise Http404
+
+
+@login_required(login_url='Users:login')
+def post_video(request):
+    if request.method == "POST":
+        form = UploadVideoForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = request.FILES['video']
+            file.name = normalize_file_name(file.name)
+            video = Video(
+                title=request.POST["title"],
+                creater=request.user,
+                path_name = file.name
+            )
+            video.save()
+            handle_uploaded_file(file, file.name)
+            return redirect('Videos:index')
+    return redirect('Videos:index')
+
 @login_required(login_url='Users:login')
 def like(request):
-
     value = True if request.POST['value'] == 'true' else False
     try:
         record = Like.objects.get(
@@ -38,34 +65,15 @@ def like(request):
     dislikes = Like.objects.filter(video_id=request.POST['video_id'], value=False).count()
     return JsonResponse({'likes': likes, 'dislikes': dislikes}, status=200)
 
-def video(request, video_id):
-    try:
-        video = Video.objects.get(pk = video_id)
-        likes = Like.objects.filter(video_id = video_id, value=True).count()
-        dislikes = Like.objects.filter(video_id = video_id, value=False).count()
-        print(f'likes: {likes}')
-        print(f'dislikes: {dislikes}')
-        return render(request, 'Videos/video.html', {'video': video, 'likes': likes, 'dislikes': dislikes})
-    except:
-        raise Http404
-
-
 @login_required(login_url='Users:login')
-def post_video(request):
-    if request.method == "POST":
-        form = UploadVideoForm(request.POST, request.FILES)
-        if form.is_valid():
-            file = request.FILES['video']
-            file.name = normalize_file_name(file.name)
-            video = Video(
-                title=request.POST["title"],
-                creater=request.user,
-                path_name = file.name
-            )
-            video.save()
-            handle_uploaded_file(file, file.name)
-            return redirect('Videos:index')
-    return redirect('Videos:index')
+def comment(request):
+    comment = Comments(
+        user_id=request.POST['user_id'],
+        video_id=request.POST['video_id'],
+        value=request.POST['value'],
+    )
+    comment.save()
+    return JsonResponse({'value': comment.value, 'username': comment.user.username}, status=200)
 
 def normalize_file_name(fn :str):
     """fn - file name, sfn - save file name"""
@@ -77,7 +85,3 @@ def handle_uploaded_file(f, fale_name):
     with open('media/' + fale_name, 'wb+') as file:
         for chunk in f.chunks():
             file.write(chunk)
-
-if __name__ == "__main__":
-    file = "adad as qwe lf"
-    normalize_file_name(file)
