@@ -3,5 +3,5 @@ from . import views
 
 app_name = 'Channels'
 urlpatterns = [
-    path('<int:user_id>/', views.index, name='channel'),
+    path('channel/<int:user_id>/', views.channel, name='channel'),
 ]

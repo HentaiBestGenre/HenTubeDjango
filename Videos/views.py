@@ -2,7 +2,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Video, Like, Comments
-from .forms import UploadVideoForm
+from .forms import UploadVideoForm, AddCommentForm
 from django.http import Http404, JsonResponse
 
 @login_required(login_url='Users:login')
@@ -18,7 +18,7 @@ def video(request, video_id):
         video = Video.objects.get(pk = video_id)
         likes = Like.objects.filter(video_id = video_id, value=True).count()
         dislikes = Like.objects.filter(video_id = video_id, value=False).count()
-        comments = Comments.objects.filter(video_id = video_id)
+        comments = Comments.objects.filter(video_id = video_id).order_by('-date')
         return render(request, 'Videos/video.html', {'video': video, 'likes': likes, 'dislikes': dislikes, 'comments': comments})
     except:
         raise Http404
@@ -29,6 +29,7 @@ def post_video(request):
     if request.method == "POST":
         form = UploadVideoForm(request.POST, request.FILES)
         if form.is_valid():
+            print(f'valid: {form.is_valid()}')
             file = request.FILES['video']
             file.name = normalize_file_name(file.name)
             video = Video(
@@ -67,13 +68,15 @@ def like(request):
 
 @login_required(login_url='Users:login')
 def comment(request):
-    comment = Comments(
-        user_id=request.POST['user_id'],
-        video_id=request.POST['video_id'],
-        value=request.POST['value'],
-    )
-    comment.save()
-    return JsonResponse({'value': comment.value, 'username': comment.user.username}, status=200)
+    form = AddCommentForm(request.POST, request.FILES)
+    if form.is_valid():
+        comment = Comments(
+            user_id=request.POST['user_id'],
+            video_id=request.POST['video_id'],
+            value=request.POST['value'],
+        )
+        comment.save()
+        return JsonResponse({'value': comment.value, 'username': comment.user.username}, status=200)
 
 def normalize_file_name(fn :str):
     """fn - file name, sfn - save file name"""

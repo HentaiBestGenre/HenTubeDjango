@@ -4,7 +4,7 @@ class UploadVideoForm(forms.Form):
     title = forms.CharField(max_length=32)
     video = forms.FileField()
 
-class AddComment(forms.Form):
+class AddCommentForm(forms.Form):
     value = forms.CharField(max_length=32)
-    video = forms.IntegerField()
-    user = forms.IntegerField()
+    video_id = forms.IntegerField()
+    user_id = forms.IntegerField()
