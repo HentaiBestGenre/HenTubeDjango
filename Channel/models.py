@@ -12,6 +12,6 @@ class Chanel(models.Model):
 
     def __str__(self):
         return f"""
-            User: {self.user.username},
-            creation date: {self.user.date_joined}
-            """
+User: {self.user.username},
+creation date: {self.user.date_joined}
+"""
