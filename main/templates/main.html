@@ -1,10 +1,16 @@
 {% extends "base.html" %}
 
+{% load humanize %}
+
 {% block styles %}
     <style>
     th, td{
         border: solid black;
         padding: 0 5px;
+    }
+
+    a{
+        text-decoration: none;
     }
 
     .videos-container{
@@ -14,6 +20,7 @@
 
     .video-container{
         padding: 10px;
+        {#background-color: rgba(181,181,181,0.47);#}
     }
 
     .preview img{
@@ -39,6 +46,16 @@
         line-height: 0.9;
         font-size: 12px;
         font-weight: 500;
+        padding: 0 0 5px 0;
+    }
+    .preview{
+        position: relative;
+        {#width: 200px;#}
+        height: 137.52px;
+        overflow: hidden;
+    }
+    .preview img{
+        object-fit: cover;
     }
     .preview-container{
         position: relative;
@@ -75,7 +92,7 @@
                         <div class="chanel">
                             <a href="{% url 'Channels:channel' user_id=video.creater_id %}">{{ video.creater.username }}</a>
                         </div>
-                        <div class="views">{{ video.views }} просмотров * {{ video.pub_data }} назад</div>
+                        <div class="views">{{ video.views }} views • {{ video.pub_data|naturaltime }}</div>
                     </div>
                 </a>
             </div>

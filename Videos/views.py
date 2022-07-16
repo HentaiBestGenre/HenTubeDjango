@@ -19,6 +19,8 @@ def video(request, video_id):
         likes = Like.objects.filter(video_id = video_id, value=True).count()
         dislikes = Like.objects.filter(video_id = video_id, value=False).count()
         comments = Comments.objects.filter(video_id = video_id).order_by('-date')
+        video.views = video.views + 1
+        video.save()
         return render(request, 'Videos/video.html', {'video': video, 'likes': likes, 'dislikes': dislikes, 'comments': comments})
     except:
         raise Http404
