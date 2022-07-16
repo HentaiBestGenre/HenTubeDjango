@@ -9,9 +9,10 @@ class Video(models.Model):
 
     title = models.CharField(max_length=32)
     pub_data = models.DateTimeField("date published", default=timezone.now)
-    path_name = models.FileField(upload_to='Videos/', validators=[
+    path_name = models.FileField(upload_to='videos/', validators=[
         FileExtensionValidator(allowed_extensions=['mp4'])
     ])
+    preview = models.ImageField(upload_to='previews/', default='previews/base_preview.jpg')
     creater = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

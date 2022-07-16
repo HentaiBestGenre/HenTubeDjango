@@ -6,6 +6,53 @@
         border: solid black;
         padding: 0 5px;
     }
+
+    .videos-container{
+        display: grid;
+        grid-template-columns: 25% 25% 25% 25%;
+    }
+
+    .video-container{
+        padding: 10px;
+    }
+
+    .preview img{
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .title{
+        position: relative;
+        left: 20px;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 0.9;
+        padding: 5px 0;
+    }
+
+    .views,
+    .chanel,
+    .pub-data{
+        position: relative;
+        left: 20px;
+        color: rgba(0, 0, 0, 0.6);
+        line-height: 0.9;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    .preview-container{
+        position: relative;
+    }
+    .duration{
+        position: absolute;
+        right: 5px;
+        bottom: 10px;
+        color: white;
+        font-size: 12px;
+        font-weight: 200;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: inline-block;
+    }
     </style>
 {% endblock styles %}
 
@@ -13,20 +60,25 @@
     <div>
         <a href="{% url 'Videos:index' %}">Post video</a>
     </div>
-    <div>
-        <table>
-            <tr>
-                <th>id</th>
-                <th>title</th>
-                <th>pub_data</th>
-            </tr>
-            {% for video in videos %}
-            <tr>
-                <td>{{ video.id }}</td>
-                <td><a href={% url "Videos:video" video.id%}>{{ video.title }}</a></td>
-                <td>{{ video.pub_data }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+    <div class="videos-container">
+        {% for video in videos %}
+            <div class="video-container">
+                <a href="{% url 'Videos:video' video_id=video.id %}">
+                    <div class="video">
+                        <div class="preview-container">
+                            <div class="preview">
+                                <img src="../../media/previews/{{ video.preview }}" alt="none">
+                            </div>
+                            <div class="duration">12:13</div>
+                        </div>
+                        <div class="title">{{ video.title }}</div>
+                        <div class="chanel">
+                            <a href="{% url 'Channels:channel' user_id=video.creater_id %}">{{ video.creater.username }}</a>
+                        </div>
+                        <div class="views">{{ video.views }} просмотров * {{ video.pub_data }} назад</div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
     </div>
 {% endblock body %}

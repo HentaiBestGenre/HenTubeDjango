@@ -9,14 +9,14 @@
             <form method="post" enctype="multipart/form-data" action={% url 'Videos:post_video' %}>
                 {% csrf_token %}
                 <label>
-                    Video title
-                    <input type="text" maxlength="32" name="title" required>
+                    Video title <input type="text" maxlength="32" name="title" required>
                 </label>
                 <label>
-                    Video
-                    <input type="file" name="video" required autocomplete="off">
+                    Video <input type="file" name="video" required autocomplete="off">
                 </label>
-
+                <label>
+                    Preview <input type="file" name="preview" required autocomplete="off">
+                </label>
                 <button type="submit">submit</button>
             </form>
         </div>

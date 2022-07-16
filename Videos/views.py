@@ -28,17 +28,21 @@ def video(request, video_id):
 def post_video(request):
     if request.method == "POST":
         form = UploadVideoForm(request.POST, request.FILES)
+        print(form.is_valid())
         if form.is_valid():
-            print(f'valid: {form.is_valid()}')
-            file = request.FILES['video']
-            file.name = normalize_file_name(file.name)
+            v = request.FILES['video']
+            v.name = normalize_file_name(v.name)
+            p = request.FILES['preview']
+            p.name = normalize_file_name(p.name)
             video = Video(
                 title=request.POST["title"],
                 creater=request.user,
-                path_name = file.name
+                path_name = v.name,
+                preview = p.name,
             )
             video.save()
-            handle_uploaded_file(file, file.name)
+            handle_uploaded_file(v, v.name, 'videos')
+            handle_uploaded_file(p, p.name, 'previews')
             return redirect('Videos:index')
     return redirect('Videos:index')
 
@@ -84,7 +88,7 @@ def normalize_file_name(fn :str):
     sfn = fn.replace(' ', '_').replace('.', f'_{salt}.')
     return sfn
 
-def handle_uploaded_file(f, fale_name):
-    with open('media/' + fale_name, 'wb+') as file:
+def handle_uploaded_file(f, fale_name, type):
+    with open(f'media/{type}/{fale_name}', 'wb+') as file:
         for chunk in f.chunks():
             file.write(chunk)
